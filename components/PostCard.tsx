@@ -1,6 +1,34 @@
+import React from 'react';
 import type { Post } from '@/types';
 import VoteButton from './VoteButton';
 import { timeAgo } from '@/lib/utils';
+
+const URL_REGEX = /https?:\/\/[^\s]+/g;
+
+function renderWithLinks(text: string) {
+  const parts: (string | React.ReactElement)[] = [];
+  let last = 0;
+  let match: RegExpExecArray | null;
+  URL_REGEX.lastIndex = 0;
+  while ((match = URL_REGEX.exec(text)) !== null) {
+    if (match.index > last) parts.push(text.slice(last, match.index));
+    parts.push(
+      <a
+        key={match.index}
+        href={match[0]}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={e => e.stopPropagation()}
+        style={{ textDecoration: 'underline', opacity: 0.7, wordBreak: 'break-all' }}
+      >
+        {match[0]}
+      </a>
+    );
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
 
 interface PostCardProps {
   post: Post;
@@ -79,7 +107,7 @@ export default function PostCard({
           maxHeight: size.h - 56,
         }}
       >
-        {post.content}
+        {renderWithLinks(post.content)}
       </div>
 
       {/* Meta */}
