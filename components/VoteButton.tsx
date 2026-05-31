@@ -6,7 +6,7 @@ interface VoteButtonProps {
   postId: string;
   voteCount: number;
   onVote: () => void;
-  small?: boolean;
+  variant?: 'default' | 'note';
 }
 
 function getVotedPosts(): string[] {
@@ -18,7 +18,7 @@ function getVotedPosts(): string[] {
   }
 }
 
-export default function VoteButton({ postId, voteCount, onVote, small }: VoteButtonProps) {
+export default function VoteButton({ postId, voteCount, onVote, variant = 'default' }: VoteButtonProps) {
   const [voted, setVoted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(voteCount);
@@ -53,14 +53,41 @@ export default function VoteButton({ postId, voteCount, onVote, small }: VoteBut
   }
 
   const emoji = loading ? '⏳' : voted ? '🔥' : '🚀';
-  const base = small ? 'px-2 py-1 text-xs rounded-full' : 'px-3 py-1.5 text-sm rounded-full';
+
+  if (variant === 'note') {
+    return (
+      <button
+        onClick={handleVote}
+        disabled={voted || loading}
+        aria-label={voted ? 'Already voted' : 'Upvote'}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 3,
+          background: voted ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.55)',
+          border: '1.5px solid rgba(0,0,0,0.12)',
+          borderRadius: 8,
+          padding: '3px 8px 3px 6px',
+          fontSize: 12,
+          fontWeight: 700,
+          color: 'rgba(0,0,0,0.6)',
+          cursor: voted || loading ? 'default' : 'pointer',
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ fontSize: 11 }}>{emoji}</span>
+        <span>{count}</span>
+      </button>
+    );
+  }
 
   return (
     <button
       onClick={handleVote}
       disabled={voted || loading}
       aria-label={voted ? 'Already voted' : 'Upvote'}
-      className={`flex items-center gap-1 font-medium transition-all whitespace-nowrap ${base} ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
         voted
           ? 'bg-orange-50 text-orange-500 cursor-default'
           : loading

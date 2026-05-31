@@ -5,7 +5,11 @@ import { postRateLimit } from '@/lib/redis';
 import { hashIp } from '@/lib/hash';
 import { calculateScore } from '@/lib/ranking';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+  const offset = Math.max(0, parseInt(url.searchParams.get('offset') ?? '0', 10));
+  const limit = Math.min(200, Math.max(1, parseInt(url.searchParams.get('limit') ?? '200', 10)));
+
   const { data: posts, error: postsError } = await supabase
     .from('posts')
     .select('id, content, created_at');
@@ -21,7 +25,7 @@ export async function GET() {
     voteCountMap[v.post_id] = (voteCountMap[v.post_id] ?? 0) + 1;
   });
 
-  const result = (posts ?? [])
+  const sorted = (posts ?? [])
     .map(p => ({
       id: p.id,
       content: p.content,
@@ -31,7 +35,7 @@ export async function GET() {
     }))
     .sort((a, b) => b.score_cache - a.score_cache);
 
-  return Response.json(result);
+  return Response.json(sorted.slice(offset, offset + limit));
 }
 
 export async function POST(request: NextRequest) {
