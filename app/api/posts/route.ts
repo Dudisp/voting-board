@@ -3,15 +3,14 @@ import sanitizeHtml from 'sanitize-html';
 import { supabase } from '@/lib/supabase';
 import { postRateLimit } from '@/lib/redis';
 import { hashIp } from '@/lib/hash';
+import { calculateScore } from '@/lib/ranking';
 
 export async function GET() {
   const { data: posts, error: postsError } = await supabase
     .from('posts')
-    .select('id, content, created_at, score_cache')
-    .order('score_cache', { ascending: false });
+    .select('id, content, created_at');
 
   if (postsError) {
-    console.error('[GET /api/posts] posts query failed:', postsError);
     return Response.json({ error: 'Failed to fetch posts' }, { status: 500 });
   }
 
@@ -22,13 +21,15 @@ export async function GET() {
     voteCountMap[v.post_id] = (voteCountMap[v.post_id] ?? 0) + 1;
   });
 
-  const result = (posts ?? []).map(p => ({
-    id: p.id,
-    content: p.content,
-    created_at: p.created_at,
-    score_cache: p.score_cache,
-    vote_count: voteCountMap[p.id] ?? 0,
-  }));
+  const result = (posts ?? [])
+    .map(p => ({
+      id: p.id,
+      content: p.content,
+      created_at: p.created_at,
+      vote_count: voteCountMap[p.id] ?? 0,
+      score_cache: calculateScore(voteCountMap[p.id] ?? 0, p.created_at),
+    }))
+    .sort((a, b) => b.score_cache - a.score_cache);
 
   return Response.json(result);
 }
@@ -41,9 +42,7 @@ export async function POST(request: NextRequest) {
 
   const ipHash = hashIp(ip);
 
-  const rateLimitResult = await postRateLimit.limit(ipHash);
-  console.log('[POST /api/posts] rate limit result:', rateLimitResult);
-  const { success } = rateLimitResult;
+  const { success } = await postRateLimit.limit(ipHash);
   if (!success) {
     return Response.json(
       { error: 'Too many posts. Try again in 10 minutes.' },
