@@ -100,6 +100,7 @@ export default function PostCard({
 
       {/* Content */}
       <div
+        dir="auto"
         style={{
           fontSize,
           fontWeight: 500,

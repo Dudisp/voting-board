@@ -43,6 +43,7 @@ export default function PostForm({ onPost }: PostFormProps) {
   return (
     <form onSubmit={handleSubmit}>
       <textarea
+        dir="auto"
         value={content}
         onChange={e => setContent(e.target.value)}
         maxLength={MAX_LENGTH}
