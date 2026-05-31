@@ -11,13 +11,13 @@ export async function POST(request: NextRequest) {
 
   const ipHash = hashIp(ip);
 
-  const { success } = await voteRateLimit.limit(ipHash);
-  if (!success) {
-    return Response.json(
-      { success: false, message: 'Too many votes. Try again in a minute.' },
-      { status: 429 }
-    );
-  }
+  // const { success } = await voteRateLimit.limit(ipHash);
+  // if (!success) {
+  //   return Response.json(
+  //     { success: false, message: 'Too many votes. Try again in a minute.' },
+  //     { status: 429 }
+  //     );
+  // }
 
   let body: { post_id?: unknown; fingerprint?: unknown };
   try {

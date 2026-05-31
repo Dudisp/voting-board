@@ -46,13 +46,13 @@ export async function POST(request: NextRequest) {
 
   const ipHash = hashIp(ip);
 
-  const { success } = await postRateLimit.limit(ipHash);
-  if (!success) {
-    return Response.json(
-      { error: 'Too many posts. Try again in 10 minutes.' },
-      { status: 429 }
-    );
-  }
+  // const { success } = await postRateLimit.limit(ipHash);
+  // if (!success) {
+  //   return Response.json(
+  //     { error: 'Too many posts. Try again in 10 minutes.' },
+  //     { status: 429 }
+  //   );
+  // }
 
   let body: { content?: unknown };
   try {
