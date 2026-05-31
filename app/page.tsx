@@ -96,6 +96,17 @@ const BG_GRID = [
   'repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.035) 40px)',
 ].join(', ');
 
+const SIDE_SLOTS: { side: 'left' | 'right'; xFromEdge: number; y: number }[] = [
+  { side: 'left',  xFromEdge: 20, y: 80  },
+  { side: 'left',  xFromEdge: 50, y: 310 },
+  { side: 'left',  xFromEdge: 18, y: 520 },
+  { side: 'right', xFromEdge: 20, y: 60  },
+  { side: 'right', xFromEdge: 45, y: 280 },
+  { side: 'right', xFromEdge: 12, y: 490 },
+];
+const SIDE_NOTE_W = 140;
+const SIDE_NOTE_H = 125;
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function Home() {
@@ -106,6 +117,7 @@ export default function Home() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [containerWidth, setContainerWidth] = useState(620);
+  const [sidePosts, setSidePosts] = useState<Post[]>([]);
   const [showModal, setShowModal] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,6 +132,7 @@ export default function Home() {
   // On narrow screens, scale down to fit. Center the 620px cluster horizontally.
   const boardScale = Math.min(1, containerWidth / 620);
   const boardOffset = Math.max(0, (containerWidth - 620) / 2);
+  const canShowSide = boardOffset > SIDE_NOTE_W + 30;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -130,6 +143,14 @@ export default function Home() {
     obs.observe(el);
     return () => obs.disconnect();
   }, [loading]);
+
+  const fetchSidePosts = useCallback(async () => {
+    const res = await fetch('/api/posts?offset=20&limit=30');
+    if (!res.ok) return;
+    const posts: Post[] = await res.json();
+    const shuffled = [...posts].sort(() => Math.random() - 0.5);
+    setSidePosts(shuffled.slice(0, SIDE_SLOTS.length));
+  }, []);
 
   const fetchPosts = useCallback(async () => {
     try {
@@ -163,9 +184,10 @@ export default function Home() {
 
   useEffect(() => {
     fetchPosts();
+    fetchSidePosts();
     const interval = setInterval(fetchPosts, 30_000);
     return () => clearInterval(interval);
-  }, [fetchPosts]);
+  }, [fetchPosts, fetchSidePosts]);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -274,6 +296,29 @@ export default function Home() {
                 />
               )}
             </div>
+
+            {/* Side discovery notes — shown in the margins outside the 620px cluster */}
+            {canShowSide && sidePosts.map((post, i) => {
+              const slot = SIDE_SLOTS[i];
+              if (!slot) return null;
+              const x = slot.side === 'left'
+                ? slot.xFromEdge
+                : containerWidth - slot.xFromEdge - SIDE_NOTE_W;
+              return (
+                <PostCard
+                  key={`side-${post.id}`}
+                  post={post}
+                  rank={i + 21}
+                  onVote={fetchPosts}
+                  position={{ x, y: slot.y }}
+                  size={{ w: SIDE_NOTE_W, h: SIDE_NOTE_H }}
+                  rotation={ROTATIONS[(i + 7) % ROTATIONS.length]}
+                  fontSize={12}
+                  color={COLORS[(i + 2) % COLORS.length]}
+                  sideNote
+                />
+              );
+            })}
           </div>
         )}
       </div>

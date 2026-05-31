@@ -39,6 +39,7 @@ interface PostCardProps {
   rotation: number;
   fontSize: number;
   color: string;
+  sideNote?: boolean;
   animated?: boolean;
 }
 
@@ -52,6 +53,7 @@ export default function PostCard({
   fontSize,
   color,
   animated,
+  sideNote,
 }: PostCardProps) {
   return (
     <div
@@ -66,7 +68,8 @@ export default function PostCard({
           background: color,
           transform: `rotate(${rotation}deg)`,
           '--note-rot': `${rotation}deg`,
-          zIndex: Math.max(0, 25 - rank),
+          zIndex: sideNote ? 1 : Math.max(0, 25 - rank),
+          opacity: sideNote ? 0.82 : 1,
           borderRadius: 4,
           padding: '12px 13px 10px',
           boxShadow: '3px 4px 12px rgba(0,0,0,0.18), 1px 1px 3px rgba(0,0,0,0.09)',
@@ -90,9 +93,9 @@ export default function PostCard({
         }}
       />
 
-      {/* Rank */}
-      <div style={{ fontSize: 10, fontWeight: 600, opacity: 0.4, marginBottom: 4 }}>
-        #{rank}
+      {/* Rank / discovery badge */}
+      <div style={{ fontSize: 10, fontWeight: 600, opacity: 0.45, marginBottom: 4 }}>
+        {sideNote ? '✨' : `#${rank}`}
       </div>
 
       {/* Content */}
