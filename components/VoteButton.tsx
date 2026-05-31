@@ -6,6 +6,7 @@ interface VoteButtonProps {
   postId: string;
   voteCount: number;
   onVote: () => void;
+  small?: boolean;
 }
 
 function getVotedPosts(): string[] {
@@ -17,7 +18,7 @@ function getVotedPosts(): string[] {
   }
 }
 
-export default function VoteButton({ postId, voteCount, onVote }: VoteButtonProps) {
+export default function VoteButton({ postId, voteCount, onVote, small }: VoteButtonProps) {
   const [voted, setVoted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(voteCount);
@@ -51,20 +52,23 @@ export default function VoteButton({ postId, voteCount, onVote }: VoteButtonProp
     }
   }
 
+  const emoji = loading ? '⏳' : voted ? '🔥' : '🚀';
+  const base = small ? 'px-2 py-1 text-xs rounded-full' : 'px-3 py-1.5 text-sm rounded-full';
+
   return (
     <button
       onClick={handleVote}
       disabled={voted || loading}
       aria-label={voted ? 'Already voted' : 'Upvote'}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+      className={`flex items-center gap-1 font-medium transition-all whitespace-nowrap ${base} ${
         voted
-          ? 'bg-blue-100 text-blue-600 cursor-default'
+          ? 'bg-orange-50 text-orange-500 cursor-default'
           : loading
           ? 'bg-gray-100 text-gray-400 cursor-wait'
-          : 'bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 cursor-pointer'
+          : 'bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-500 cursor-pointer'
       }`}
     >
-      <span>{voted ? '▲' : '△'}</span>
+      <span>{emoji}</span>
       <span>{count}</span>
     </button>
   );
