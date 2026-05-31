@@ -18,10 +18,8 @@ export default function PostForm({ onPost }: PostFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!content.trim() || loading) return;
-
     setLoading(true);
     setError(null);
-
     try {
       const res = await fetch('/api/posts', {
         method: 'POST',
@@ -43,16 +41,16 @@ export default function PostForm({ onPost }: PostFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+    <form onSubmit={handleSubmit}>
       <textarea
         value={content}
         onChange={e => setContent(e.target.value)}
         maxLength={MAX_LENGTH}
         placeholder="What's on your mind? (max 300 characters)"
-        rows={3}
-        className="w-full resize-none text-gray-900 placeholder-gray-400 focus:outline-none text-sm leading-relaxed"
+        rows={4}
+        className="w-full resize-none text-gray-900 placeholder-gray-400 focus:outline-none text-sm leading-relaxed border border-gray-200 rounded-xl p-3 focus:border-blue-300"
       />
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+      <div className="flex items-center justify-between mt-3">
         <span className={`text-xs ${remaining < 50 ? 'text-amber-500' : 'text-gray-400'}`}>
           {remaining} characters remaining
         </span>

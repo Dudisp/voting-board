@@ -106,6 +106,7 @@ export default function Home() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [boardScale, setBoardScale] = useState(1);
+  const [showModal, setShowModal] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -115,7 +116,6 @@ export default function Home() {
   const extraRows = Math.ceil(extraCount / EXTRA_PER_ROW);
   const boardHeight = BASE_BOARD_H + (extraCount > 0 ? extraRows * EXTRA_ROW_H + 80 : 0);
 
-  // Scale board to container width
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -124,7 +124,7 @@ export default function Home() {
     });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [loading]); // re-attach once board renders
+  }, [loading]);
 
   const fetchPosts = useCallback(async () => {
     try {
@@ -132,7 +132,6 @@ export default function Home() {
       if (!res.ok) throw new Error();
       const fresh: Post[] = await res.json();
       setFirstPosts(fresh);
-      // Remove any extras that are now in the top 20
       const freshIds = new Set(fresh.map(p => p.id));
       setExtraPosts(prev => prev.filter(p => !freshIds.has(p.id)));
       setError(null);
@@ -175,15 +174,25 @@ export default function Home() {
   }, [fetchMore, hasMore]);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-1">Voting Board</h1>
-        <p className="text-gray-500 text-sm">Post something short. Upvote what matters.</p>
+    <main className="min-h-screen bg-gray-50">
+
+      {/* ── Navbar ── */}
+      <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">Voting Board</h1>
+          <p className="text-xs text-gray-400 mt-0.5">Post something short. Upvote what matters.</p>
+        </div>
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors"
+        >
+          <span className="text-base leading-none">+</span>
+          <span>New post</span>
+        </button>
       </div>
 
-      <PostForm onPost={fetchPosts} />
-
-      <div className="mt-8">
+      {/* ── Board ── */}
+      <div className="p-4">
         {loading && (
           <div className="text-center text-gray-400 py-12 text-sm">Loading...</div>
         )}
@@ -207,7 +216,6 @@ export default function Home() {
               overflow: 'hidden',
             }}
           >
-            {/* 620px inner coordinate board */}
             <div
               style={{
                 position: 'absolute',
@@ -264,6 +272,38 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* ── New post modal ── */}
+      {showModal && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-[1000] px-4"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl p-6 w-full max-w-md relative shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">New post</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <PostForm
+              onPost={() => {
+                fetchPosts();
+                setShowModal(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }
