@@ -60,10 +60,10 @@ const SIZES = [
   { w: 90,  h: 78  }, // #20
 ];
 
-const BASE_BOARD_H = 880;
+const BASE_BOARD_H = 780;
 const EXTRA_ROW_H = 110;
 const EXTRA_PER_ROW = 5;
-const EXTRA_BASE_Y = 760;
+const EXTRA_BASE_Y = 710;
 
 function getPosition(rank: number): { x: number; y: number } {
   if (rank <= 20) return POSITIONS[rank - 1];
@@ -105,7 +105,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [boardScale, setBoardScale] = useState(1);
+  const [containerWidth, setContainerWidth] = useState(620);
   const [showModal, setShowModal] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -116,11 +116,16 @@ export default function Home() {
   const extraRows = Math.ceil(extraCount / EXTRA_PER_ROW);
   const boardHeight = BASE_BOARD_H + (extraCount > 0 ? extraRows * EXTRA_ROW_H + 80 : 0);
 
+  // Cap scale at 1 so notes never grow beyond their fixed pixel sizes on wide screens.
+  // On narrow screens, scale down to fit. Center the 620px cluster horizontally.
+  const boardScale = Math.min(1, containerWidth / 620);
+  const boardOffset = Math.max(0, (containerWidth - 620) / 2);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const obs = new ResizeObserver(entries => {
-      setBoardScale(entries[0].contentRect.width / 620);
+      setContainerWidth(entries[0].contentRect.width);
     });
     obs.observe(el);
     return () => obs.disconnect();
@@ -220,7 +225,7 @@ export default function Home() {
               style={{
                 position: 'absolute',
                 top: 0,
-                left: 0,
+                left: boardOffset,
                 width: 620,
                 height: boardHeight,
                 transform: `scale(${boardScale})`,
