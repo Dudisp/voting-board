@@ -41,27 +41,45 @@ const EXTRA_PER_ROW = 5;
 const EXTRA_BASE_Y = 710;
 
 const SIDE_SLOTS: { side: 'left' | 'right'; xFromEdge: number; y: number }[] = [
-  // Depth 0 — near outer edge (visible when margin > ~150px)
-  { side: 'left',  xFromEdge: 15,  y: 80  },
-  { side: 'left',  xFromEdge: 20,  y: 310 },
-  { side: 'left',  xFromEdge: 12,  y: 540 },
-  { side: 'right', xFromEdge: 15,  y: 60  },
-  { side: 'right', xFromEdge: 18,  y: 290 },
-  { side: 'right', xFromEdge: 10,  y: 510 },
+  // Depth 0 — near outer edge (margin > 150px, ~930px screen)
+  { side: 'left',  xFromEdge: 15,  y: 70  },
+  { side: 'left',  xFromEdge: 20,  y: 230 },
+  { side: 'left',  xFromEdge: 12,  y: 400 },
+  { side: 'left',  xFromEdge: 18,  y: 570 },
+  { side: 'right', xFromEdge: 15,  y: 55  },
+  { side: 'right', xFromEdge: 18,  y: 210 },
+  { side: 'right', xFromEdge: 10,  y: 380 },
+  { side: 'right', xFromEdge: 14,  y: 545 },
 
-  // Depth 1 — middle of margin (visible when margin > ~320px)
-  { side: 'left',  xFromEdge: 170, y: 170 },
-  { side: 'left',  xFromEdge: 165, y: 430 },
-  { side: 'right', xFromEdge: 170, y: 150 },
-  { side: 'right', xFromEdge: 160, y: 400 },
+  // Depth 1 — 1st inner column (margin > 320px, ~1260px screen)
+  { side: 'left',  xFromEdge: 168, y: 140 },
+  { side: 'left',  xFromEdge: 172, y: 305 },
+  { side: 'left',  xFromEdge: 165, y: 475 },
+  { side: 'left',  xFromEdge: 170, y: 635 },
+  { side: 'right', xFromEdge: 168, y: 120 },
+  { side: 'right', xFromEdge: 162, y: 285 },
+  { side: 'right', xFromEdge: 170, y: 455 },
+  { side: 'right', xFromEdge: 165, y: 615 },
 
-  // Depth 2 — near cluster (visible when margin > ~470px)
-  { side: 'left',  xFromEdge: 320, y: 110 },
-  { side: 'left',  xFromEdge: 315, y: 360 },
-  { side: 'left',  xFromEdge: 310, y: 590 },
-  { side: 'right', xFromEdge: 320, y: 90  },
-  { side: 'right', xFromEdge: 310, y: 340 },
-  { side: 'right', xFromEdge: 315, y: 560 },
+  // Depth 2 — 2nd inner column (margin > 470px, ~1560px screen)
+  { side: 'left',  xFromEdge: 315, y: 95  },
+  { side: 'left',  xFromEdge: 320, y: 260 },
+  { side: 'left',  xFromEdge: 312, y: 430 },
+  { side: 'left',  xFromEdge: 318, y: 600 },
+  { side: 'right', xFromEdge: 315, y: 75  },
+  { side: 'right', xFromEdge: 308, y: 240 },
+  { side: 'right', xFromEdge: 320, y: 410 },
+  { side: 'right', xFromEdge: 313, y: 580 },
+
+  // Depth 3 — near cluster (margin > 615px, ~1850px / full HD)
+  { side: 'left',  xFromEdge: 462, y: 160 },
+  { side: 'left',  xFromEdge: 468, y: 340 },
+  { side: 'left',  xFromEdge: 458, y: 520 },
+  { side: 'left',  xFromEdge: 465, y: 680 },
+  { side: 'right', xFromEdge: 462, y: 140 },
+  { side: 'right', xFromEdge: 455, y: 315 },
+  { side: 'right', xFromEdge: 465, y: 495 },
+  { side: 'right', xFromEdge: 460, y: 655 },
 ];
 const SIDE_NOTE_W = 140;
 const SIDE_NOTE_H = 125;
