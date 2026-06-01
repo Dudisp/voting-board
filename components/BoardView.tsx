@@ -138,6 +138,8 @@ export default function BoardView({ slug }: { slug: string }) {
   const [sidePosts, setSidePosts] = useState<Post[]>([]);
   const [showModal, setShowModal] = useState(false);
   const sideStyles = useRef<{ color: string; rotation: number }[]>([]);
+  const mainStyles = useRef<{ color: string; rotation: number }[]>([]);
+  const sideActiveSlots = useRef<Set<number>>(new Set(SIDE_SLOTS.map((_, i) => i)));
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -150,15 +152,33 @@ export default function BoardView({ slug }: { slug: string }) {
   const boardScale = Math.min(1, containerWidth / 620);
   const boardOffset = Math.max(0, (containerWidth - 620) / 2);
   const visibleSideSlots = SIDE_SLOTS.filter(
-    slot => slot.xFromEdge + SIDE_NOTE_W + 10 < boardOffset
+    (slot, i) => slot.xFromEdge + SIDE_NOTE_W + 10 < boardOffset && sideActiveSlots.current.has(i)
   );
 
-  // Generate random color + rotation per slot once on mount
+  // Generate random styles + active slots once on mount
   useEffect(() => {
     sideStyles.current = SIDE_SLOTS.map((_, i) => ({
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
       rotation: ROTATIONS[(i + 7) % ROTATIONS.length] + (Math.random() - 0.5) * 6,
     }));
+
+    mainStyles.current = Array.from({ length: 20 }, (_, i) => ({
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      rotation: ROTATIONS[i % ROTATIONS.length] + (Math.random() - 0.5) * 4,
+    }));
+
+    // Pick 3–5 random slots per column (5 slots/column, 8 columns)
+    const active = new Set<number>();
+    const COL = 5;
+    for (let c = 0; c < SIDE_SLOTS.length / COL; c++) {
+      const start = c * COL;
+      const count = 3 + Math.floor(Math.random() * 3); // 3-5
+      Array.from({ length: COL }, (_, k) => start + k)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, count)
+        .forEach(i => active.add(i));
+    }
+    sideActiveSlots.current = active;
   }, []);
 
   // Fetch board metadata
@@ -309,6 +329,10 @@ export default function BoardView({ slug }: { slug: string }) {
             >
               {allPosts.map((post, i) => {
                 const rank = i + 1;
+                const ms = mainStyles.current[i] ?? {
+                  color: COLORS[(rank - 1) % COLORS.length],
+                  rotation: ROTATIONS[(rank - 1) % ROTATIONS.length],
+                };
                 return (
                   <PostCard
                     key={post.id}
@@ -317,9 +341,9 @@ export default function BoardView({ slug }: { slug: string }) {
                     onVote={fetchPosts}
                     position={getPosition(rank)}
                     size={getSize(rank)}
-                    rotation={ROTATIONS[(rank - 1) % ROTATIONS.length]}
+                    rotation={ms.rotation}
                     fontSize={getFontSize(rank)}
-                    color={COLORS[(rank - 1) % COLORS.length]}
+                    color={ms.color}
                     animated={rank > 20}
                   />
                 );
