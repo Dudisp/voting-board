@@ -40,48 +40,80 @@ const EXTRA_ROW_H = 110;
 const EXTRA_PER_ROW = 5;
 const EXTRA_BASE_Y = 710;
 
-// 7 slots per column (side × depth), 8 columns → 56 total
-// y range: ~5 to ~645 (notes are 125px tall, board is 780px)
+// 56 slots in 8 groups of 7. Within each group, xFromEdge varies ±40px and
+// y uses irregular gaps so notes zigzag rather than forming visible rows.
 const SIDE_SLOTS: { side: 'left' | 'right'; xFromEdge: number; y: number }[] = [
-  // Depth 0 — near edge (margin > 150px)
-  { side: 'left',  xFromEdge: 15,  y: 6   }, { side: 'left',  xFromEdge: 20,  y: 112 },
-  { side: 'left',  xFromEdge: 12,  y: 218 }, { side: 'left',  xFromEdge: 18,  y: 324 },
-  { side: 'left',  xFromEdge: 14,  y: 430 }, { side: 'left',  xFromEdge: 19,  y: 534 },
-  { side: 'left',  xFromEdge: 16,  y: 638 },
-  { side: 'right', xFromEdge: 16,  y: 14  }, { side: 'right', xFromEdge: 11,  y: 120 },
-  { side: 'right', xFromEdge: 19,  y: 226 }, { side: 'right', xFromEdge: 13,  y: 332 },
-  { side: 'right', xFromEdge: 17,  y: 437 }, { side: 'right', xFromEdge: 12,  y: 542 },
-  { side: 'right', xFromEdge: 15,  y: 644 },
+  // Group 0 — left, near edge (xFromEdge 8–42)
+  { side: 'left',  xFromEdge: 12, y: 8   },
+  { side: 'left',  xFromEdge: 38, y: 88  },
+  { side: 'left',  xFromEdge: 8,  y: 233 },
+  { side: 'left',  xFromEdge: 42, y: 321 },
+  { side: 'left',  xFromEdge: 16, y: 446 },
+  { side: 'left',  xFromEdge: 30, y: 541 },
+  { side: 'left',  xFromEdge: 10, y: 638 },
 
-  // Depth 1 — 1st inner column (margin > 320px)
-  { side: 'left',  xFromEdge: 168, y: 4   }, { side: 'left',  xFromEdge: 172, y: 110 },
-  { side: 'left',  xFromEdge: 164, y: 216 }, { side: 'left',  xFromEdge: 170, y: 322 },
-  { side: 'left',  xFromEdge: 166, y: 428 }, { side: 'left',  xFromEdge: 171, y: 532 },
-  { side: 'left',  xFromEdge: 167, y: 636 },
-  { side: 'right', xFromEdge: 170, y: 10  }, { side: 'right', xFromEdge: 163, y: 116 },
-  { side: 'right', xFromEdge: 171, y: 222 }, { side: 'right', xFromEdge: 165, y: 328 },
-  { side: 'right', xFromEdge: 169, y: 433 }, { side: 'right', xFromEdge: 164, y: 538 },
-  { side: 'right', xFromEdge: 168, y: 641 },
+  // Group 1 — right, near edge (xFromEdge 6–40)
+  { side: 'right', xFromEdge: 22, y: 30  },
+  { side: 'right', xFromEdge: 8,  y: 125 },
+  { side: 'right', xFromEdge: 40, y: 195 },
+  { side: 'right', xFromEdge: 14, y: 338 },
+  { side: 'right', xFromEdge: 35, y: 420 },
+  { side: 'right', xFromEdge: 6,  y: 548 },
+  { side: 'right', xFromEdge: 28, y: 640 },
 
-  // Depth 2 — 2nd inner column (margin > 470px)
-  { side: 'left',  xFromEdge: 315, y: 8   }, { side: 'left',  xFromEdge: 321, y: 114 },
-  { side: 'left',  xFromEdge: 311, y: 220 }, { side: 'left',  xFromEdge: 318, y: 326 },
-  { side: 'left',  xFromEdge: 314, y: 432 }, { side: 'left',  xFromEdge: 320, y: 536 },
-  { side: 'left',  xFromEdge: 316, y: 640 },
-  { side: 'right', xFromEdge: 317, y: 16  }, { side: 'right', xFromEdge: 309, y: 122 },
-  { side: 'right', xFromEdge: 320, y: 228 }, { side: 'right', xFromEdge: 313, y: 334 },
-  { side: 'right', xFromEdge: 318, y: 438 }, { side: 'right', xFromEdge: 311, y: 543 },
-  { side: 'right', xFromEdge: 315, y: 645 },
+  // Group 2 — left, 1st inner (xFromEdge 145–198)
+  { side: 'left',  xFromEdge: 168, y: 15  },
+  { side: 'left',  xFromEdge: 195, y: 98  },
+  { side: 'left',  xFromEdge: 145, y: 210 },
+  { side: 'left',  xFromEdge: 182, y: 280 },
+  { side: 'left',  xFromEdge: 158, y: 412 },
+  { side: 'left',  xFromEdge: 198, y: 520 },
+  { side: 'left',  xFromEdge: 165, y: 632 },
 
-  // Depth 3 — near cluster (margin > 615px, full HD)
-  { side: 'left',  xFromEdge: 462, y: 5   }, { side: 'left',  xFromEdge: 468, y: 111 },
-  { side: 'left',  xFromEdge: 457, y: 217 }, { side: 'left',  xFromEdge: 464, y: 323 },
-  { side: 'left',  xFromEdge: 460, y: 429 }, { side: 'left',  xFromEdge: 466, y: 533 },
-  { side: 'left',  xFromEdge: 461, y: 637 },
-  { side: 'right', xFromEdge: 463, y: 12  }, { side: 'right', xFromEdge: 456, y: 118 },
-  { side: 'right', xFromEdge: 466, y: 224 }, { side: 'right', xFromEdge: 459, y: 330 },
-  { side: 'right', xFromEdge: 462, y: 435 }, { side: 'right', xFromEdge: 457, y: 540 },
-  { side: 'right', xFromEdge: 463, y: 642 },
+  // Group 3 — right, 1st inner (xFromEdge 140–202)
+  { side: 'right', xFromEdge: 150, y: 52  },
+  { side: 'right', xFromEdge: 188, y: 158 },
+  { side: 'right', xFromEdge: 140, y: 245 },
+  { side: 'right', xFromEdge: 175, y: 378 },
+  { side: 'right', xFromEdge: 202, y: 462 },
+  { side: 'right', xFromEdge: 155, y: 568 },
+  { side: 'right', xFromEdge: 185, y: 638 },
+
+  // Group 4 — left, 2nd inner (xFromEdge 288–348)
+  { side: 'left',  xFromEdge: 316, y: 22  },
+  { side: 'left',  xFromEdge: 288, y: 118 },
+  { side: 'left',  xFromEdge: 342, y: 208 },
+  { side: 'left',  xFromEdge: 302, y: 348 },
+  { side: 'left',  xFromEdge: 335, y: 445 },
+  { side: 'left',  xFromEdge: 292, y: 555 },
+  { side: 'left',  xFromEdge: 348, y: 634 },
+
+  // Group 5 — right, 2nd inner (xFromEdge 282–348)
+  { side: 'right', xFromEdge: 305, y: 45  },
+  { side: 'right', xFromEdge: 345, y: 138 },
+  { side: 'right', xFromEdge: 282, y: 262 },
+  { side: 'right', xFromEdge: 338, y: 370 },
+  { side: 'right', xFromEdge: 308, y: 488 },
+  { side: 'right', xFromEdge: 348, y: 562 },
+  { side: 'right', xFromEdge: 290, y: 643 },
+
+  // Group 6 — left, near cluster (xFromEdge 440–488, full HD)
+  { side: 'left',  xFromEdge: 460, y: 10  },
+  { side: 'left',  xFromEdge: 488, y: 105 },
+  { side: 'left',  xFromEdge: 440, y: 225 },
+  { side: 'left',  xFromEdge: 475, y: 330 },
+  { side: 'left',  xFromEdge: 452, y: 448 },
+  { side: 'left',  xFromEdge: 482, y: 538 },
+  { side: 'left',  xFromEdge: 462, y: 640 },
+
+  // Group 7 — right, near cluster (xFromEdge 435–485, full HD)
+  { side: 'right', xFromEdge: 448, y: 38  },
+  { side: 'right', xFromEdge: 470, y: 148 },
+  { side: 'right', xFromEdge: 435, y: 268 },
+  { side: 'right', xFromEdge: 485, y: 375 },
+  { side: 'right', xFromEdge: 455, y: 482 },
+  { side: 'right', xFromEdge: 475, y: 575 },
+  { side: 'right', xFromEdge: 442, y: 638 },
 ];
 
 const SIDE_NOTE_W = 140;
