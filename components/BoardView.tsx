@@ -41,12 +41,27 @@ const EXTRA_PER_ROW = 5;
 const EXTRA_BASE_Y = 710;
 
 const SIDE_SLOTS: { side: 'left' | 'right'; xFromEdge: number; y: number }[] = [
-  { side: 'left',  xFromEdge: 20, y: 80  },
-  { side: 'left',  xFromEdge: 50, y: 310 },
-  { side: 'left',  xFromEdge: 18, y: 520 },
-  { side: 'right', xFromEdge: 20, y: 60  },
-  { side: 'right', xFromEdge: 45, y: 280 },
-  { side: 'right', xFromEdge: 12, y: 490 },
+  // Depth 0 — near outer edge (visible when margin > ~150px)
+  { side: 'left',  xFromEdge: 15,  y: 80  },
+  { side: 'left',  xFromEdge: 20,  y: 310 },
+  { side: 'left',  xFromEdge: 12,  y: 540 },
+  { side: 'right', xFromEdge: 15,  y: 60  },
+  { side: 'right', xFromEdge: 18,  y: 290 },
+  { side: 'right', xFromEdge: 10,  y: 510 },
+
+  // Depth 1 — middle of margin (visible when margin > ~320px)
+  { side: 'left',  xFromEdge: 170, y: 170 },
+  { side: 'left',  xFromEdge: 165, y: 430 },
+  { side: 'right', xFromEdge: 170, y: 150 },
+  { side: 'right', xFromEdge: 160, y: 400 },
+
+  // Depth 2 — near cluster (visible when margin > ~470px)
+  { side: 'left',  xFromEdge: 320, y: 110 },
+  { side: 'left',  xFromEdge: 315, y: 360 },
+  { side: 'left',  xFromEdge: 310, y: 590 },
+  { side: 'right', xFromEdge: 320, y: 90  },
+  { side: 'right', xFromEdge: 310, y: 340 },
+  { side: 'right', xFromEdge: 315, y: 560 },
 ];
 const SIDE_NOTE_W = 140;
 const SIDE_NOTE_H = 125;
@@ -107,7 +122,9 @@ export default function BoardView({ slug }: { slug: string }) {
 
   const boardScale = Math.min(1, containerWidth / 620);
   const boardOffset = Math.max(0, (containerWidth - 620) / 2);
-  const canShowSide = boardOffset > SIDE_NOTE_W + 30;
+  const visibleSideSlots = SIDE_SLOTS.filter(
+    slot => slot.xFromEdge + SIDE_NOTE_W + 10 < boardOffset
+  );
 
   // Fetch board metadata
   useEffect(() => {
@@ -131,7 +148,7 @@ export default function BoardView({ slug }: { slug: string }) {
   }, [loading]);
 
   const fetchSidePosts = useCallback(async () => {
-    const res = await fetch(`/api/posts?board=${slug}&offset=20&limit=30`);
+    const res = await fetch(`/api/posts?board=${slug}&offset=20&limit=50`);
     if (!res.ok) return;
     const posts: Post[] = await res.json();
     const shuffled = [...posts].sort(() => Math.random() - 0.5);
@@ -289,15 +306,15 @@ export default function BoardView({ slug }: { slug: string }) {
               )}
             </div>
 
-            {canShowSide && sidePosts.map((post, i) => {
-              const slot = SIDE_SLOTS[i];
-              if (!slot) return null;
+            {visibleSideSlots.map((slot, i) => {
+              const post = sidePosts[i];
+              if (!post) return null;
               const x = slot.side === 'left'
                 ? slot.xFromEdge
                 : containerWidth - slot.xFromEdge - SIDE_NOTE_W;
               return (
                 <PostCard
-                  key={`side-${post.id}`}
+                  key={`side-${post.id}-${i}`}
                   post={post}
                   rank={i + 21}
                   onVote={fetchPosts}
