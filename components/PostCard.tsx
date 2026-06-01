@@ -41,6 +41,7 @@ interface PostCardProps {
   color: string;
   sideNote?: boolean;
   animated?: boolean;
+  relativeMode?: boolean;
 }
 
 export default function PostCard({
@@ -54,20 +55,19 @@ export default function PostCard({
   color,
   animated,
   sideNote,
+  relativeMode,
 }: PostCardProps) {
   return (
     <div
       className={`sticky-note${animated ? ' note-enter' : ''}`}
       style={
         {
-          position: 'absolute',
-          left: position.x,
-          top: position.y,
+          position: relativeMode ? 'relative' : 'absolute',
+          ...(relativeMode ? { display: 'inline-block', verticalAlign: 'top' } : { left: position.x, top: position.y }),
           width: size.w,
           minHeight: size.h,
           background: color,
           transform: `rotate(${rotation}deg)`,
-          '--note-rot': `${rotation}deg`,
           zIndex: sideNote ? 1 : Math.max(0, 25 - rank),
           opacity: sideNote ? 0.82 : 1,
           borderRadius: 4,
@@ -77,6 +77,7 @@ export default function PostCard({
           userSelect: 'none',
           boxSizing: 'border-box',
           overflow: 'hidden',
+          ['--note-rot' as string]: `${rotation}deg`,
         } as React.CSSProperties
       }
     >

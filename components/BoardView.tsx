@@ -40,55 +40,50 @@ const EXTRA_ROW_H = 110;
 const EXTRA_PER_ROW = 5;
 const EXTRA_BASE_Y = 710;
 
+// 7 slots per column (side × depth), 8 columns → 56 total
+// y values cap at ~630 so notes (h≈125) don't overflow the 780px board
 const SIDE_SLOTS: { side: 'left' | 'right'; xFromEdge: number; y: number }[] = [
-  // Depth 0 — near outer edge (margin > 150px)
-  { side: 'left',  xFromEdge: 15,  y: 60  },
-  { side: 'left',  xFromEdge: 20,  y: 185 },
-  { side: 'left',  xFromEdge: 12,  y: 305 },
-  { side: 'left',  xFromEdge: 18,  y: 430 },
-  { side: 'left',  xFromEdge: 14,  y: 560 },
-  { side: 'right', xFromEdge: 16,  y: 45  },
-  { side: 'right', xFromEdge: 11,  y: 175 },
-  { side: 'right', xFromEdge: 19,  y: 300 },
-  { side: 'right', xFromEdge: 13,  y: 425 },
-  { side: 'right', xFromEdge: 17,  y: 550 },
+  // Depth 0 — near edge (margin > 150px)
+  { side: 'left',  xFromEdge: 15,  y: 28  }, { side: 'left',  xFromEdge: 20,  y: 130 },
+  { side: 'left',  xFromEdge: 12,  y: 232 }, { side: 'left',  xFromEdge: 18,  y: 335 },
+  { side: 'left',  xFromEdge: 14,  y: 436 }, { side: 'left',  xFromEdge: 19,  y: 536 },
+  { side: 'left',  xFromEdge: 16,  y: 622 },
+  { side: 'right', xFromEdge: 16,  y: 38  }, { side: 'right', xFromEdge: 11,  y: 140 },
+  { side: 'right', xFromEdge: 19,  y: 242 }, { side: 'right', xFromEdge: 13,  y: 344 },
+  { side: 'right', xFromEdge: 17,  y: 445 }, { side: 'right', xFromEdge: 12,  y: 544 },
+  { side: 'right', xFromEdge: 15,  y: 630 },
 
   // Depth 1 — 1st inner column (margin > 320px)
-  { side: 'left',  xFromEdge: 168, y: 110 },
-  { side: 'left',  xFromEdge: 172, y: 235 },
-  { side: 'left',  xFromEdge: 164, y: 360 },
-  { side: 'left',  xFromEdge: 170, y: 485 },
-  { side: 'left',  xFromEdge: 166, y: 615 },
-  { side: 'right', xFromEdge: 170, y: 95  },
-  { side: 'right', xFromEdge: 163, y: 225 },
-  { side: 'right', xFromEdge: 171, y: 350 },
-  { side: 'right', xFromEdge: 165, y: 475 },
-  { side: 'right', xFromEdge: 169, y: 605 },
+  { side: 'left',  xFromEdge: 168, y: 76  }, { side: 'left',  xFromEdge: 172, y: 178 },
+  { side: 'left',  xFromEdge: 164, y: 280 }, { side: 'left',  xFromEdge: 170, y: 382 },
+  { side: 'left',  xFromEdge: 166, y: 482 }, { side: 'left',  xFromEdge: 171, y: 580 },
+  { side: 'left',  xFromEdge: 167, y: 625 },
+  { side: 'right', xFromEdge: 170, y: 64  }, { side: 'right', xFromEdge: 163, y: 166 },
+  { side: 'right', xFromEdge: 171, y: 268 }, { side: 'right', xFromEdge: 165, y: 370 },
+  { side: 'right', xFromEdge: 169, y: 470 }, { side: 'right', xFromEdge: 164, y: 568 },
+  { side: 'right', xFromEdge: 168, y: 618 },
 
   // Depth 2 — 2nd inner column (margin > 470px)
-  { side: 'left',  xFromEdge: 315, y: 75  },
-  { side: 'left',  xFromEdge: 321, y: 200 },
-  { side: 'left',  xFromEdge: 311, y: 325 },
-  { side: 'left',  xFromEdge: 318, y: 450 },
-  { side: 'left',  xFromEdge: 314, y: 580 },
-  { side: 'right', xFromEdge: 317, y: 60  },
-  { side: 'right', xFromEdge: 309, y: 190 },
-  { side: 'right', xFromEdge: 320, y: 315 },
-  { side: 'right', xFromEdge: 313, y: 440 },
-  { side: 'right', xFromEdge: 318, y: 565 },
+  { side: 'left',  xFromEdge: 315, y: 52  }, { side: 'left',  xFromEdge: 321, y: 155 },
+  { side: 'left',  xFromEdge: 311, y: 258 }, { side: 'left',  xFromEdge: 318, y: 360 },
+  { side: 'left',  xFromEdge: 314, y: 460 }, { side: 'left',  xFromEdge: 320, y: 558 },
+  { side: 'left',  xFromEdge: 316, y: 618 },
+  { side: 'right', xFromEdge: 317, y: 62  }, { side: 'right', xFromEdge: 309, y: 163 },
+  { side: 'right', xFromEdge: 320, y: 266 }, { side: 'right', xFromEdge: 313, y: 368 },
+  { side: 'right', xFromEdge: 318, y: 468 }, { side: 'right', xFromEdge: 311, y: 566 },
+  { side: 'right', xFromEdge: 315, y: 624 },
 
   // Depth 3 — near cluster (margin > 615px, full HD)
-  { side: 'left',  xFromEdge: 462, y: 120 },
-  { side: 'left',  xFromEdge: 468, y: 250 },
-  { side: 'left',  xFromEdge: 457, y: 375 },
-  { side: 'left',  xFromEdge: 464, y: 500 },
-  { side: 'left',  xFromEdge: 460, y: 630 },
-  { side: 'right', xFromEdge: 463, y: 105 },
-  { side: 'right', xFromEdge: 456, y: 235 },
-  { side: 'right', xFromEdge: 466, y: 360 },
-  { side: 'right', xFromEdge: 459, y: 490 },
-  { side: 'right', xFromEdge: 462, y: 615 },
+  { side: 'left',  xFromEdge: 462, y: 95  }, { side: 'left',  xFromEdge: 468, y: 196 },
+  { side: 'left',  xFromEdge: 457, y: 298 }, { side: 'left',  xFromEdge: 464, y: 400 },
+  { side: 'left',  xFromEdge: 460, y: 500 }, { side: 'left',  xFromEdge: 466, y: 596 },
+  { side: 'left',  xFromEdge: 461, y: 628 },
+  { side: 'right', xFromEdge: 463, y: 82  }, { side: 'right', xFromEdge: 456, y: 184 },
+  { side: 'right', xFromEdge: 466, y: 286 }, { side: 'right', xFromEdge: 459, y: 388 },
+  { side: 'right', xFromEdge: 462, y: 488 }, { side: 'right', xFromEdge: 457, y: 585 },
+  { side: 'right', xFromEdge: 463, y: 622 },
 ];
+
 const SIDE_NOTE_W = 140;
 const SIDE_NOTE_H = 125;
 
@@ -130,19 +125,25 @@ export default function BoardView({ slug }: { slug: string }) {
   const [notFound, setNotFound] = useState(false);
   const [firstPosts, setFirstPosts] = useState<Post[]>([]);
   const [extraPosts, setExtraPosts] = useState<Post[]>([]);
+  const [sidePosts, setSidePosts] = useState<Post[]>([]);
+  const [mobileNotes, setMobileNotes] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [mobileHasMore, setMobileHasMore] = useState(true);
+  const [mobileFetching, setMobileFetching] = useState(false);
   const [containerWidth, setContainerWidth] = useState(620);
-  const [sidePosts, setSidePosts] = useState<Post[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const sideStyles = useRef<{ color: string; rotation: number }[]>([]);
-  const mainStyles = useRef<{ color: string; rotation: number }[]>([]);
-  const sideActiveSlots = useRef<Set<number>>(new Set(SIDE_SLOTS.map((_, i) => i)));
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const mobileSentinelRef = useRef<HTMLDivElement>(null);
+  const sideStyles = useRef<{ color: string; rotation: number }[]>([]);
+  const mainStyles = useRef<{ color: string; rotation: number }[]>([]);
+  const mobileStyles = useRef<{ color: string; rotation: number }[]>([]);
+  const sideActiveSlots = useRef<Set<number>>(new Set(SIDE_SLOTS.map((_, i) => i)));
+  const mobileNotesOffset = useRef(0);
 
   const allPosts = [...firstPosts, ...extraPosts];
   const extraCount = Math.max(0, allPosts.length - 20);
@@ -151,11 +152,12 @@ export default function BoardView({ slug }: { slug: string }) {
 
   const boardScale = Math.min(1, containerWidth / 620);
   const boardOffset = Math.max(0, (containerWidth - 620) / 2);
+  const isMobile = boardOffset < SIDE_NOTE_W + 30;
   const visibleSideSlots = SIDE_SLOTS.filter(
     (slot, i) => slot.xFromEdge + SIDE_NOTE_W + 10 < boardOffset && sideActiveSlots.current.has(i)
   );
 
-  // Generate random styles + active slots once on mount
+  // Generate all random styles + active slot selection once on mount
   useEffect(() => {
     sideStyles.current = SIDE_SLOTS.map((_, i) => ({
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
@@ -167,12 +169,12 @@ export default function BoardView({ slug }: { slug: string }) {
       rotation: ROTATIONS[i % ROTATIONS.length] + (Math.random() - 0.5) * 4,
     }));
 
-    // Pick 3–5 random slots per column (5 slots/column, 8 columns)
+    // 7 slots per column, pick 3–7 randomly each load
     const active = new Set<number>();
-    const COL = 5;
+    const COL = 7;
     for (let c = 0; c < SIDE_SLOTS.length / COL; c++) {
       const start = c * COL;
-      const count = 3 + Math.floor(Math.random() * 3); // 3-5
+      const count = 3 + Math.floor(Math.random() * 5); // 3–7
       Array.from({ length: COL }, (_, k) => start + k)
         .sort(() => Math.random() - 0.5)
         .slice(0, count)
@@ -180,6 +182,16 @@ export default function BoardView({ slug }: { slug: string }) {
     }
     sideActiveSlots.current = active;
   }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(entries => {
+      setContainerWidth(entries[0].contentRect.width);
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [loading]);
 
   // Fetch board metadata
   useEffect(() => {
@@ -192,40 +204,37 @@ export default function BoardView({ slug }: { slug: string }) {
       });
   }, [slug]);
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const obs = new ResizeObserver(entries => {
-      setContainerWidth(entries[0].contentRect.width);
-    });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [loading]);
-
-  const fetchSidePosts = useCallback(async () => {
-    const res = await fetch(`/api/posts?board=${slug}&offset=20&limit=50`);
+  // Refresh main posts only (used by interval + vote callbacks)
+  const refreshPosts = useCallback(async () => {
+    const res = await fetch(`/api/posts?board=${slug}&limit=20&offset=0`);
     if (!res.ok) return;
-    const posts: Post[] = await res.json();
-    const shuffled = [...posts].sort(() => Math.random() - 0.5);
-    setSidePosts(shuffled.slice(0, SIDE_SLOTS.length));
+    const fresh: Post[] = await res.json();
+    setFirstPosts(fresh);
+    const freshIds = new Set(fresh.map(p => p.id));
+    setExtraPosts(prev => prev.filter(p => !freshIds.has(p.id)));
+    setError(null);
   }, [slug]);
 
-  const fetchPosts = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/posts?board=${slug}&limit=20&offset=0`);
-      if (!res.ok) throw new Error();
-      const fresh: Post[] = await res.json();
-      setFirstPosts(fresh);
-      const freshIds = new Set(fresh.map(p => p.id));
-      setExtraPosts(prev => prev.filter(p => !freshIds.has(p.id)));
-      setError(null);
-    } catch {
-      setError('Failed to load posts.');
-    } finally {
-      setLoading(false);
-    }
-  }, [slug]);
+  // Initial load: fetch main + side posts simultaneously, show everything at once
+  useEffect(() => {
+    Promise.all([
+      fetch(`/api/posts?board=${slug}&limit=20&offset=0`).then(r => r.json()),
+      fetch(`/api/posts?board=${slug}&offset=20&limit=60`).then(r => r.json()),
+    ])
+      .then(([mainData, sideData]: [Post[], Post[]]) => {
+        setFirstPosts(mainData);
+        const shuffled = [...sideData].sort(() => Math.random() - 0.5);
+        setSidePosts(shuffled.slice(0, SIDE_SLOTS.length));
+        setError(null);
+      })
+      .catch(() => setError('Failed to load posts.'))
+      .finally(() => setLoading(false));
 
+    const interval = setInterval(refreshPosts, 30_000);
+    return () => clearInterval(interval);
+  }, [slug, refreshPosts]);
+
+  // Ranked infinite scroll (inside board, all screens)
   const fetchMore = useCallback(async () => {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
@@ -241,13 +250,6 @@ export default function BoardView({ slug }: { slug: string }) {
   }, [slug, loadingMore, hasMore, extraPosts.length]);
 
   useEffect(() => {
-    fetchPosts();
-    fetchSidePosts();
-    const interval = setInterval(fetchPosts, 30_000);
-    return () => clearInterval(interval);
-  }, [fetchPosts, fetchSidePosts]);
-
-  useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel || !hasMore) return;
     const obs = new IntersectionObserver(
@@ -257,6 +259,42 @@ export default function BoardView({ slug }: { slug: string }) {
     obs.observe(sentinel);
     return () => obs.disconnect();
   }, [fetchMore, hasMore]);
+
+  // Mobile random scroll (below board, mobile only)
+  const fetchMobileNotes = useCallback(async () => {
+    if (mobileFetching || !mobileHasMore) return;
+    setMobileFetching(true);
+    try {
+      const res = await fetch(`/api/posts?board=${slug}&offset=${20 + mobileNotesOffset.current}&limit=10`);
+      if (!res.ok) return;
+      const data: Post[] = await res.json();
+      if (data.length < 10) setMobileHasMore(false);
+      if (data.length > 0) {
+        const shuffled = [...data].sort(() => Math.random() - 0.5);
+        const newStyles = shuffled.map(() => ({
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          rotation: (Math.random() - 0.5) * 10,
+        }));
+        mobileStyles.current = [...mobileStyles.current, ...newStyles];
+        setMobileNotes(prev => [...prev, ...shuffled]);
+        mobileNotesOffset.current += data.length;
+      }
+    } finally {
+      setMobileFetching(false);
+    }
+  }, [slug, mobileFetching, mobileHasMore]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const sentinel = mobileSentinelRef.current;
+    if (!sentinel || !mobileHasMore) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) fetchMobileNotes(); },
+      { threshold: 0 }
+    );
+    obs.observe(sentinel);
+    return () => obs.disconnect();
+  }, [isMobile, fetchMobileNotes, mobileHasMore]);
 
   if (notFound) {
     return (
@@ -273,16 +311,11 @@ export default function BoardView({ slug }: { slug: string }) {
       {/* ── Navbar ── */}
       <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100">
         <div className="flex items-center gap-3 min-w-0">
-          <Link
-            href="/"
-            className="text-gray-400 hover:text-gray-600 text-sm shrink-0"
-          >
+          <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm shrink-0">
             ← All boards
           </Link>
           <div className="min-w-0">
-            <h1 className="text-xl font-bold text-gray-900 truncate">
-              {boardName || slug}
-            </h1>
+            <h1 className="text-xl font-bold text-gray-900 truncate">{boardName || slug}</h1>
             <p className="text-xs text-gray-400 mt-0.5">Post something short. Upvote what matters.</p>
           </div>
         </div>
@@ -316,6 +349,7 @@ export default function BoardView({ slug }: { slug: string }) {
               overflow: 'hidden',
             }}
           >
+            {/* Main 620px cluster */}
             <div
               style={{
                 position: 'absolute',
@@ -338,7 +372,7 @@ export default function BoardView({ slug }: { slug: string }) {
                     key={post.id}
                     post={post}
                     rank={rank}
-                    onVote={fetchPosts}
+                    onVote={refreshPosts}
                     position={getPosition(rank)}
                     size={getSize(rank)}
                     rotation={ms.rotation}
@@ -365,7 +399,8 @@ export default function BoardView({ slug }: { slug: string }) {
               )}
             </div>
 
-            {visibleSideSlots.map((slot, i) => {
+            {/* Desktop side discovery notes */}
+            {!isMobile && visibleSideSlots.map((slot, i) => {
               const post = sidePosts[i];
               if (!post) return null;
               const x = slot.side === 'left'
@@ -380,7 +415,7 @@ export default function BoardView({ slug }: { slug: string }) {
                   key={`side-${post.id}-${i}`}
                   post={post}
                   rank={i + 21}
-                  onVote={fetchPosts}
+                  onVote={refreshPosts}
                   position={{ x, y: slot.y }}
                   size={{ w: SIDE_NOTE_W, h: SIDE_NOTE_H }}
                   rotation={style.rotation}
@@ -393,6 +428,44 @@ export default function BoardView({ slug }: { slug: string }) {
           </div>
         )}
       </div>
+
+      {/* ── Mobile discovery scroll (below board, mobile only) ── */}
+      {!loading && isMobile && (
+        <div className="px-3 pb-10">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, justifyContent: 'center' }}>
+            {mobileNotes.map((post, i) => {
+              const s = mobileStyles.current[i] ?? {
+                color: COLORS[i % COLORS.length],
+                rotation: 0,
+              };
+              return (
+                <PostCard
+                  key={`mobile-${post.id}`}
+                  post={post}
+                  rank={i + 21}
+                  onVote={refreshPosts}
+                  position={{ x: 0, y: 0 }}
+                  size={{ w: 140, h: 120 }}
+                  rotation={s.rotation}
+                  fontSize={12}
+                  color={s.color}
+                  sideNote
+                  relativeMode
+                />
+              );
+            })}
+          </div>
+
+          {mobileFetching && (
+            <div style={{ textAlign: 'center', fontSize: 11, color: 'rgba(0,0,0,0.3)', padding: '16px 0', fontStyle: 'italic' }}>
+              loading…
+            </div>
+          )}
+          {mobileHasMore && !mobileFetching && (
+            <div ref={mobileSentinelRef} style={{ height: 20 }} />
+          )}
+        </div>
+      )}
 
       {/* ── New post modal ── */}
       {showModal && (
@@ -417,7 +490,7 @@ export default function BoardView({ slug }: { slug: string }) {
             </div>
             <PostForm
               board={slug}
-              onPost={() => { fetchPosts(); setShowModal(false); }}
+              onPost={() => { refreshPosts(); setShowModal(false); }}
             />
           </div>
         </div>
