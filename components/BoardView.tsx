@@ -41,45 +41,53 @@ const EXTRA_PER_ROW = 5;
 const EXTRA_BASE_Y = 710;
 
 const SIDE_SLOTS: { side: 'left' | 'right'; xFromEdge: number; y: number }[] = [
-  // Depth 0 — near outer edge (margin > 150px, ~930px screen)
-  { side: 'left',  xFromEdge: 15,  y: 70  },
-  { side: 'left',  xFromEdge: 20,  y: 230 },
-  { side: 'left',  xFromEdge: 12,  y: 400 },
-  { side: 'left',  xFromEdge: 18,  y: 570 },
-  { side: 'right', xFromEdge: 15,  y: 55  },
-  { side: 'right', xFromEdge: 18,  y: 210 },
-  { side: 'right', xFromEdge: 10,  y: 380 },
-  { side: 'right', xFromEdge: 14,  y: 545 },
+  // Depth 0 — near outer edge (margin > 150px)
+  { side: 'left',  xFromEdge: 15,  y: 60  },
+  { side: 'left',  xFromEdge: 20,  y: 185 },
+  { side: 'left',  xFromEdge: 12,  y: 305 },
+  { side: 'left',  xFromEdge: 18,  y: 430 },
+  { side: 'left',  xFromEdge: 14,  y: 560 },
+  { side: 'right', xFromEdge: 16,  y: 45  },
+  { side: 'right', xFromEdge: 11,  y: 175 },
+  { side: 'right', xFromEdge: 19,  y: 300 },
+  { side: 'right', xFromEdge: 13,  y: 425 },
+  { side: 'right', xFromEdge: 17,  y: 550 },
 
-  // Depth 1 — 1st inner column (margin > 320px, ~1260px screen)
-  { side: 'left',  xFromEdge: 168, y: 140 },
-  { side: 'left',  xFromEdge: 172, y: 305 },
-  { side: 'left',  xFromEdge: 165, y: 475 },
-  { side: 'left',  xFromEdge: 170, y: 635 },
-  { side: 'right', xFromEdge: 168, y: 120 },
-  { side: 'right', xFromEdge: 162, y: 285 },
-  { side: 'right', xFromEdge: 170, y: 455 },
-  { side: 'right', xFromEdge: 165, y: 615 },
+  // Depth 1 — 1st inner column (margin > 320px)
+  { side: 'left',  xFromEdge: 168, y: 110 },
+  { side: 'left',  xFromEdge: 172, y: 235 },
+  { side: 'left',  xFromEdge: 164, y: 360 },
+  { side: 'left',  xFromEdge: 170, y: 485 },
+  { side: 'left',  xFromEdge: 166, y: 615 },
+  { side: 'right', xFromEdge: 170, y: 95  },
+  { side: 'right', xFromEdge: 163, y: 225 },
+  { side: 'right', xFromEdge: 171, y: 350 },
+  { side: 'right', xFromEdge: 165, y: 475 },
+  { side: 'right', xFromEdge: 169, y: 605 },
 
-  // Depth 2 — 2nd inner column (margin > 470px, ~1560px screen)
-  { side: 'left',  xFromEdge: 315, y: 95  },
-  { side: 'left',  xFromEdge: 320, y: 260 },
-  { side: 'left',  xFromEdge: 312, y: 430 },
-  { side: 'left',  xFromEdge: 318, y: 600 },
-  { side: 'right', xFromEdge: 315, y: 75  },
-  { side: 'right', xFromEdge: 308, y: 240 },
-  { side: 'right', xFromEdge: 320, y: 410 },
-  { side: 'right', xFromEdge: 313, y: 580 },
+  // Depth 2 — 2nd inner column (margin > 470px)
+  { side: 'left',  xFromEdge: 315, y: 75  },
+  { side: 'left',  xFromEdge: 321, y: 200 },
+  { side: 'left',  xFromEdge: 311, y: 325 },
+  { side: 'left',  xFromEdge: 318, y: 450 },
+  { side: 'left',  xFromEdge: 314, y: 580 },
+  { side: 'right', xFromEdge: 317, y: 60  },
+  { side: 'right', xFromEdge: 309, y: 190 },
+  { side: 'right', xFromEdge: 320, y: 315 },
+  { side: 'right', xFromEdge: 313, y: 440 },
+  { side: 'right', xFromEdge: 318, y: 565 },
 
-  // Depth 3 — near cluster (margin > 615px, ~1850px / full HD)
-  { side: 'left',  xFromEdge: 462, y: 160 },
-  { side: 'left',  xFromEdge: 468, y: 340 },
-  { side: 'left',  xFromEdge: 458, y: 520 },
-  { side: 'left',  xFromEdge: 465, y: 680 },
-  { side: 'right', xFromEdge: 462, y: 140 },
-  { side: 'right', xFromEdge: 455, y: 315 },
-  { side: 'right', xFromEdge: 465, y: 495 },
-  { side: 'right', xFromEdge: 460, y: 655 },
+  // Depth 3 — near cluster (margin > 615px, full HD)
+  { side: 'left',  xFromEdge: 462, y: 120 },
+  { side: 'left',  xFromEdge: 468, y: 250 },
+  { side: 'left',  xFromEdge: 457, y: 375 },
+  { side: 'left',  xFromEdge: 464, y: 500 },
+  { side: 'left',  xFromEdge: 460, y: 630 },
+  { side: 'right', xFromEdge: 463, y: 105 },
+  { side: 'right', xFromEdge: 456, y: 235 },
+  { side: 'right', xFromEdge: 466, y: 360 },
+  { side: 'right', xFromEdge: 459, y: 490 },
+  { side: 'right', xFromEdge: 462, y: 615 },
 ];
 const SIDE_NOTE_W = 140;
 const SIDE_NOTE_H = 125;
@@ -129,6 +137,7 @@ export default function BoardView({ slug }: { slug: string }) {
   const [containerWidth, setContainerWidth] = useState(620);
   const [sidePosts, setSidePosts] = useState<Post[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const sideStyles = useRef<{ color: string; rotation: number }[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -143,6 +152,14 @@ export default function BoardView({ slug }: { slug: string }) {
   const visibleSideSlots = SIDE_SLOTS.filter(
     slot => slot.xFromEdge + SIDE_NOTE_W + 10 < boardOffset
   );
+
+  // Generate random color + rotation per slot once on mount
+  useEffect(() => {
+    sideStyles.current = SIDE_SLOTS.map((_, i) => ({
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      rotation: ROTATIONS[(i + 7) % ROTATIONS.length] + (Math.random() - 0.5) * 6,
+    }));
+  }, []);
 
   // Fetch board metadata
   useEffect(() => {
@@ -330,6 +347,10 @@ export default function BoardView({ slug }: { slug: string }) {
               const x = slot.side === 'left'
                 ? slot.xFromEdge
                 : containerWidth - slot.xFromEdge - SIDE_NOTE_W;
+              const style = sideStyles.current[SIDE_SLOTS.indexOf(slot)] ?? {
+                color: COLORS[(i + 2) % COLORS.length],
+                rotation: ROTATIONS[(i + 7) % ROTATIONS.length],
+              };
               return (
                 <PostCard
                   key={`side-${post.id}-${i}`}
@@ -338,9 +359,9 @@ export default function BoardView({ slug }: { slug: string }) {
                   onVote={fetchPosts}
                   position={{ x, y: slot.y }}
                   size={{ w: SIDE_NOTE_W, h: SIDE_NOTE_H }}
-                  rotation={ROTATIONS[(i + 7) % ROTATIONS.length]}
+                  rotation={style.rotation}
                   fontSize={12}
-                  color={COLORS[(i + 2) % COLORS.length]}
+                  color={style.color}
                   sideNote
                 />
               );
