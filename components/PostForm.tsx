@@ -4,11 +4,12 @@ import { useState } from 'react';
 
 interface PostFormProps {
   onPost: () => void;
+  board?: string;
 }
 
 const MAX_LENGTH = 300;
 
-export default function PostForm({ onPost }: PostFormProps) {
+export default function PostForm({ onPost, board }: PostFormProps) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export default function PostForm({ onPost }: PostFormProps) {
       const res = await fetch('/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, ...(board ? { board } : {}) }),
       });
       const data = await res.json();
       if (!res.ok) {

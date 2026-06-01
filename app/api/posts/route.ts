@@ -7,18 +7,38 @@ import { calculateScore } from '@/lib/ranking';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
+  const boardSlug = url.searchParams.get('board');
   const offset = Math.max(0, parseInt(url.searchParams.get('offset') ?? '0', 10));
   const limit = Math.min(200, Math.max(1, parseInt(url.searchParams.get('limit') ?? '200', 10)));
 
-  const { data: posts, error: postsError } = await supabase
-    .from('posts')
-    .select('id, content, created_at');
+  let boardId: string | null = null;
+  if (boardSlug) {
+    const { data: board } = await supabase
+      .from('boards')
+      .select('id')
+      .eq('slug', boardSlug)
+      .maybeSingle();
+
+    if (!board) {
+      return Response.json({ error: 'Board not found' }, { status: 404 });
+    }
+    boardId = board.id;
+  }
+
+  let postsQuery = supabase.from('posts').select('id, content, created_at');
+  if (boardId) postsQuery = postsQuery.eq('board_id', boardId);
+
+  const { data: posts, error: postsError } = await postsQuery;
 
   if (postsError) {
     return Response.json({ error: 'Failed to fetch posts' }, { status: 500 });
   }
 
-  const { data: votesData } = await supabase.from('votes').select('post_id');
+  const postIds = (posts ?? []).map(p => p.id);
+
+  const { data: votesData } = postIds.length > 0
+    ? await supabase.from('votes').select('post_id').in('post_id', postIds)
+    : { data: [] as { post_id: string }[] };
 
   const voteCountMap: Record<string, number> = {};
   (votesData ?? []).forEach(v => {
@@ -54,11 +74,25 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let body: { content?: unknown };
+  let body: { content?: unknown; board?: unknown };
   try {
     body = await request.json();
   } catch {
     return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  if (typeof body.board !== 'string' || !body.board) {
+    return Response.json({ error: 'board slug is required' }, { status: 400 });
+  }
+
+  const { data: board } = await supabase
+    .from('boards')
+    .select('id')
+    .eq('slug', body.board)
+    .maybeSingle();
+
+  if (!board) {
+    return Response.json({ error: 'Board not found' }, { status: 404 });
   }
 
   if (typeof body.content !== 'string') {
@@ -79,7 +113,7 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabase
     .from('posts')
-    .insert({ content: clean, author_ip_hash: ipHash })
+    .insert({ content: clean, author_ip_hash: ipHash, board_id: board.id })
     .select()
     .single();
 
