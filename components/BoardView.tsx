@@ -41,47 +41,47 @@ const EXTRA_PER_ROW = 5;
 const EXTRA_BASE_Y = 710;
 
 // 7 slots per column (side × depth), 8 columns → 56 total
-// y values cap at ~630 so notes (h≈125) don't overflow the 780px board
+// y range: ~5 to ~645 (notes are 125px tall, board is 780px)
 const SIDE_SLOTS: { side: 'left' | 'right'; xFromEdge: number; y: number }[] = [
   // Depth 0 — near edge (margin > 150px)
-  { side: 'left',  xFromEdge: 15,  y: 28  }, { side: 'left',  xFromEdge: 20,  y: 130 },
-  { side: 'left',  xFromEdge: 12,  y: 232 }, { side: 'left',  xFromEdge: 18,  y: 335 },
-  { side: 'left',  xFromEdge: 14,  y: 436 }, { side: 'left',  xFromEdge: 19,  y: 536 },
-  { side: 'left',  xFromEdge: 16,  y: 622 },
-  { side: 'right', xFromEdge: 16,  y: 38  }, { side: 'right', xFromEdge: 11,  y: 140 },
-  { side: 'right', xFromEdge: 19,  y: 242 }, { side: 'right', xFromEdge: 13,  y: 344 },
-  { side: 'right', xFromEdge: 17,  y: 445 }, { side: 'right', xFromEdge: 12,  y: 544 },
-  { side: 'right', xFromEdge: 15,  y: 630 },
+  { side: 'left',  xFromEdge: 15,  y: 6   }, { side: 'left',  xFromEdge: 20,  y: 112 },
+  { side: 'left',  xFromEdge: 12,  y: 218 }, { side: 'left',  xFromEdge: 18,  y: 324 },
+  { side: 'left',  xFromEdge: 14,  y: 430 }, { side: 'left',  xFromEdge: 19,  y: 534 },
+  { side: 'left',  xFromEdge: 16,  y: 638 },
+  { side: 'right', xFromEdge: 16,  y: 14  }, { side: 'right', xFromEdge: 11,  y: 120 },
+  { side: 'right', xFromEdge: 19,  y: 226 }, { side: 'right', xFromEdge: 13,  y: 332 },
+  { side: 'right', xFromEdge: 17,  y: 437 }, { side: 'right', xFromEdge: 12,  y: 542 },
+  { side: 'right', xFromEdge: 15,  y: 644 },
 
   // Depth 1 — 1st inner column (margin > 320px)
-  { side: 'left',  xFromEdge: 168, y: 76  }, { side: 'left',  xFromEdge: 172, y: 178 },
-  { side: 'left',  xFromEdge: 164, y: 280 }, { side: 'left',  xFromEdge: 170, y: 382 },
-  { side: 'left',  xFromEdge: 166, y: 482 }, { side: 'left',  xFromEdge: 171, y: 580 },
-  { side: 'left',  xFromEdge: 167, y: 625 },
-  { side: 'right', xFromEdge: 170, y: 64  }, { side: 'right', xFromEdge: 163, y: 166 },
-  { side: 'right', xFromEdge: 171, y: 268 }, { side: 'right', xFromEdge: 165, y: 370 },
-  { side: 'right', xFromEdge: 169, y: 470 }, { side: 'right', xFromEdge: 164, y: 568 },
-  { side: 'right', xFromEdge: 168, y: 618 },
+  { side: 'left',  xFromEdge: 168, y: 4   }, { side: 'left',  xFromEdge: 172, y: 110 },
+  { side: 'left',  xFromEdge: 164, y: 216 }, { side: 'left',  xFromEdge: 170, y: 322 },
+  { side: 'left',  xFromEdge: 166, y: 428 }, { side: 'left',  xFromEdge: 171, y: 532 },
+  { side: 'left',  xFromEdge: 167, y: 636 },
+  { side: 'right', xFromEdge: 170, y: 10  }, { side: 'right', xFromEdge: 163, y: 116 },
+  { side: 'right', xFromEdge: 171, y: 222 }, { side: 'right', xFromEdge: 165, y: 328 },
+  { side: 'right', xFromEdge: 169, y: 433 }, { side: 'right', xFromEdge: 164, y: 538 },
+  { side: 'right', xFromEdge: 168, y: 641 },
 
   // Depth 2 — 2nd inner column (margin > 470px)
-  { side: 'left',  xFromEdge: 315, y: 52  }, { side: 'left',  xFromEdge: 321, y: 155 },
-  { side: 'left',  xFromEdge: 311, y: 258 }, { side: 'left',  xFromEdge: 318, y: 360 },
-  { side: 'left',  xFromEdge: 314, y: 460 }, { side: 'left',  xFromEdge: 320, y: 558 },
-  { side: 'left',  xFromEdge: 316, y: 618 },
-  { side: 'right', xFromEdge: 317, y: 62  }, { side: 'right', xFromEdge: 309, y: 163 },
-  { side: 'right', xFromEdge: 320, y: 266 }, { side: 'right', xFromEdge: 313, y: 368 },
-  { side: 'right', xFromEdge: 318, y: 468 }, { side: 'right', xFromEdge: 311, y: 566 },
-  { side: 'right', xFromEdge: 315, y: 624 },
+  { side: 'left',  xFromEdge: 315, y: 8   }, { side: 'left',  xFromEdge: 321, y: 114 },
+  { side: 'left',  xFromEdge: 311, y: 220 }, { side: 'left',  xFromEdge: 318, y: 326 },
+  { side: 'left',  xFromEdge: 314, y: 432 }, { side: 'left',  xFromEdge: 320, y: 536 },
+  { side: 'left',  xFromEdge: 316, y: 640 },
+  { side: 'right', xFromEdge: 317, y: 16  }, { side: 'right', xFromEdge: 309, y: 122 },
+  { side: 'right', xFromEdge: 320, y: 228 }, { side: 'right', xFromEdge: 313, y: 334 },
+  { side: 'right', xFromEdge: 318, y: 438 }, { side: 'right', xFromEdge: 311, y: 543 },
+  { side: 'right', xFromEdge: 315, y: 645 },
 
   // Depth 3 — near cluster (margin > 615px, full HD)
-  { side: 'left',  xFromEdge: 462, y: 95  }, { side: 'left',  xFromEdge: 468, y: 196 },
-  { side: 'left',  xFromEdge: 457, y: 298 }, { side: 'left',  xFromEdge: 464, y: 400 },
-  { side: 'left',  xFromEdge: 460, y: 500 }, { side: 'left',  xFromEdge: 466, y: 596 },
-  { side: 'left',  xFromEdge: 461, y: 628 },
-  { side: 'right', xFromEdge: 463, y: 82  }, { side: 'right', xFromEdge: 456, y: 184 },
-  { side: 'right', xFromEdge: 466, y: 286 }, { side: 'right', xFromEdge: 459, y: 388 },
-  { side: 'right', xFromEdge: 462, y: 488 }, { side: 'right', xFromEdge: 457, y: 585 },
-  { side: 'right', xFromEdge: 463, y: 622 },
+  { side: 'left',  xFromEdge: 462, y: 5   }, { side: 'left',  xFromEdge: 468, y: 111 },
+  { side: 'left',  xFromEdge: 457, y: 217 }, { side: 'left',  xFromEdge: 464, y: 323 },
+  { side: 'left',  xFromEdge: 460, y: 429 }, { side: 'left',  xFromEdge: 466, y: 533 },
+  { side: 'left',  xFromEdge: 461, y: 637 },
+  { side: 'right', xFromEdge: 463, y: 12  }, { side: 'right', xFromEdge: 456, y: 118 },
+  { side: 'right', xFromEdge: 466, y: 224 }, { side: 'right', xFromEdge: 459, y: 330 },
+  { side: 'right', xFromEdge: 462, y: 435 }, { side: 'right', xFromEdge: 457, y: 540 },
+  { side: 'right', xFromEdge: 463, y: 642 },
 ];
 
 const SIDE_NOTE_W = 140;
